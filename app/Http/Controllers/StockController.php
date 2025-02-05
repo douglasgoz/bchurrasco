@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Stock;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use stdClass;
 
@@ -32,7 +33,8 @@ class StockController extends Controller
             $stock->category = $product->category;
             $stock->price = $request->price;
             $stock->supplier = $request->supplier;
-            $stock->tax = $request->tax;
+            $stock->tax = $request->tax ?? 0;
+            $stock->created_at = Carbon::now();
             $stock->save();
 
             toastr()->success('Data has been saved successfully!');
@@ -88,7 +90,7 @@ class StockController extends Controller
                 'end' => 'required',
             ]);
     
-            $results = Stock::whereBetween('created_at', [$request->start, $request->end]);
+            $results = Stock::whereBetween('created_at', [$request->start . ' 00:00:00', $request->end . ' 23:59:59']);
     
             if (!is_null($request->product_id)) {
                 $results = $results->where('product_id', $request->product_id);
@@ -102,27 +104,10 @@ class StockController extends Controller
                 $results = $results->where('supplier', 'like', $request->supplier);
             }
 
-            $totalPrices = [];
-            $totalTaxes = [];
-            $results = $results->get();
-
-            foreach ($results as $result) {
-                if (!isset($totalPrices[$result->product_id])) {
-                    $totalPrices[$result->product_id] = 0;
-                }
-
-                if (!isset($totalTaxes[$result->product_id])) {
-                    $totalTaxes[$result->product_id] = 0;
-                }
-
-                $totalPrices[$result->product_id] += $result->price;
-                $totalTaxes[$result->product_id] += $result->tax;
-            }
+            $results = $results->with('product')->get();
 
             return view('inventory.viewReport')->with([
                 'results' => $results,
-                'totalPrices' => $totalPrices,
-                'totalTaxes' => $totalTaxes,
                 'menu' => 'reports'
             ]);
         } catch (\Throwable $th) {

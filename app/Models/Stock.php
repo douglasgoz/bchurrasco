@@ -25,6 +25,6 @@ class Stock extends Model
 
     public function product(): HasOne
     {
-        return $this->hasOne(Product::class, 'id');
+        return $this->hasOne(Product::class, 'id', 'product_id');
     }
 }
