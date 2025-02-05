@@ -68,7 +68,7 @@
 
         <div class="col-md-4">
             Total amount paid: 
-            <h2 class="text-green">{{$totalPaid}}</h2>
+            <h2 class="text-green">$ {{number_format($totalPaid, 2, '.', ',')}}</h2>
         </div>
     </div>
 </div>
