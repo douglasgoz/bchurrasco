@@ -8,6 +8,7 @@
                 <th scope="col">Product</th>
                 <th scope="col">Supplier</th>
                 <th scope="col">Category</th>
+                <th scope="col">Quantity</th>
                 <th scope="col">Price Per Unity</th>
                 <th scope="col">Total Price</th>
                 <th scope="col">Tax</th>
@@ -20,6 +21,7 @@
                     <th>{{$result->product->name ?? ''}}</th>
                     <th>{{$result->supplier}}</th>
                     <th>{{$result->category}}</th>
+                    <th>{{$result->quantity}}</th>
                     <th>{{$result->price / $result->quantity}}</th>
                     <th>{{$result->price}}</th>
                     <th>{{$result->tax}}</th>
